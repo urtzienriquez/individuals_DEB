@@ -1,0 +1,424 @@
+\documentclass[tikz, border=12pt]{standalone}
+\usepackage{amsmath, amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usetikzlibrary{arrows.meta}
+
+\definecolor{viridismax}{HTML}{FDE725}
+\definecolor{viridismin}{HTML}{440154}
+\definecolor{viridisblue}{HTML}{31688E}
+\definecolor{viridisgreen}{HTML}{35B779}
+
+\pgfdeclareverticalshading{tempgrad}{100bp}{%
+  color(0bp)=(BrickRed); color(45bp)=(white); color(100bp)=(MidnightBlue)%
+}
+
+% ============================================================
+% Surface functions F(theta, T), theta,T in [0,1]
+% ============================================================
+% (1) Concave dome, fixed shape (curvature magnitude peaks at T=0.5, ->0 at edges)
+\pgfmathdeclarefunction{Fconcave}{2}{%
+  \pgfmathparse{2.5 * (1 - 4*(#1 - 0.5)^2) * (1 - 4*(#2 - 0.5)^2)}%
+}
+% (2) Gaussian, fixed shape (curvature magnitude peaks at T=0.5, decays at edges)
+\pgfmathdeclarefunction{Fgauss}{2}{%
+  \pgfmathparse{2.5 * exp(-12*(#1 - 0.5)^2 - 10*(#2 - 0.5)^2)}%
+}
+% (2b) Gaussian with T-opt shift: each theta peaks at a different T
+\pgfmathdeclarefunction{FgaussTopt}{2}{%
+  % Same max F=2.5 at every theta's T_opt: envelope + diagonal ridge +
+  % compensation so the ridge crest is flat (all peaks equal height)
+  \pgfmathparse{2.0 * exp(-15*(#2-0.5)^2 + 12*(#2-0.5)*(#1-0.5) - 1.8*(#1-0.5)^2)}%
+}
+% (3) Sigmoidal, FIXED inflection at theta=0.4 for all T (curvature magnitude only rescaled by T)
+\pgfmathdeclarefunction{Fsig}{2}{%
+  \pgfmathparse{(2.5/(1+exp(-10*(#1-0.4)))) * (1/(1+exp(-10*(#2-0.4))))}%
+}
+% (4) Sigmoidal with MOVING inflection c(T) = 0.2 + 0.6*T (curvature SIGN flips across T)
+\pgfmathdeclarefunction{Fshift}{2}{%
+  \pgfmathparse{2.5/(1+exp(-10*(#1-(0.2+0.6*#2))))}%
+}
+% Second-derivative-in-theta sign/shape functions (unnormalized, for row C)
+% j1,j2,j3 >= 0 always; j4 changes sign at T=0.5
+\pgfmathdeclarefunction{jConcave}{1}{\pgfmathparse{1 - 4*(#1-0.5)^2}}
+\pgfmathdeclarefunction{jGauss}{1}{\pgfmathparse{exp(-10*(#1-0.5)^2)}}
+\pgfmathdeclarefunction{jGaussTopt}{1}{\pgfmathparse{exp(-15*(#1-0.5)*(#1-0.5)) * (1 - 40*(#1-0.5)*(#1-0.5)) * (4*#1*(1-#1))}}
+\pgfmathdeclarefunction{jSig}{1}{\pgfmathparse{(1+exp(-6))/(1+exp(-10*(#1-0.4)))}}
+\pgfmathdeclarefunction{pShift}{1}{\pgfmathparse{1/(1+exp(-10*(0.5-(0.2+0.6*#1))))}}
+\pgfmathdeclarefunction{jShift}{1}{\pgfmathparse{-4*(pShift(#1))*(1-pShift(#1))*(1-2*pShift(#1)) * (4*#1*(1-#1))}}
+
+\begin{document}
+\begin{tikzpicture}[
+  >=Stealth,
+  ax/.style={line width=0.6pt, ->, black!80},
+  main/.style={line width=1.3pt, black},
+  guide/.style={dashed, line width=0.4pt, black!35},
+  accent/.style={dashed, line width=0.7pt, MidnightBlue},
+  note/.style={font=\Large, black!90},
+  smallnote/.style={font=\large, black!80},
+  title/.style={font=\bfseries\LARGE, anchor=north west},
+  gap/.style={line width=1.2pt, BrickRed, |-|},
+  slicecurve/.style={line width=1.4pt},
+  curr/.style={line width=0.7pt, dashed, black!35},
+  cold/.style={MidnightBlue},
+  warm/.style={BrickRed},
+]
+
+\useasboundingbox (0.5, -2.2) rectangle (33.8, 17.2);
+
+
+% ============================================================
+% ROW B -- (b) Four ways F(theta,T) can be shaped
+% ============================================================
+\begin{scope}[shift={(2, 12)}]
+  % \node[title] at (-2, 6.5) {(a) \textbf{Performance depends on trait \emph{and} environment: $F(\theta,T)$}};
+  \node[title] at (-2, 5.5) {(a)};
+
+  \def\colgap{6.5}
+  \foreach \k/\lbl/\fn/\extra in {
+      0/{Concave}/Fconcave/{},
+      1/{Gaussian}/Fgauss/{},
+      2/{Gaussian, \emph{shifting} $T_{opt}$}/FgaussTopt/{},
+      3/{Sigmoidal, fixed threshold}/Fsig/{},
+      4/{Sigmoidal, \emph{shifting} threshold}/Fshift/{shift}} {
+    \begin{scope}[shift={({1.0 + \k*\colgap}, 3.6)}]
+      \def\Ty{-4.6}
+      \ifnum\k>2
+        \def\Fx{1.1}
+        \def\thx{1.7} \def\thy{0.8}
+      \else
+        \def\Fx{1.45}
+        \def\thx{2.0} \def\thy{0.8}
+      \fi
+      \ifnum\k=0
+        % Temperature gradient bar (blue=cold top -> white -> red=warm bottom) – first panel only
+        \shade[shading=tempgrad] (-2.5, 0) rectangle (-1.5, {\Ty*1.18});
+        \draw[black!60, line width=0.4pt] (-2.5, 0) rectangle (-1.5, {\Ty*1.18});
+        \node[cold, font=\large, anchor=south] at (-2, 0.15) {Cold};
+        \node[warm, font=\large, anchor=north] at (-2, -5.5) {Warm};
+      \fi
+
+      \draw[ax] (0,0) -- ({\Fx*3.15}, 0) node[above right, font=\normalsize] {$F$};
+      \draw[ax] (0,0) -- node[midway, xshift=-1em, font=\large] {$T$} (0, {\Ty*1.18});
+      \draw[ax] (0,0) -- node[midway, yshift=1em, font=\large] {$\theta$} ({\thx*1.22}, {\thy*1.22});
+
+      \foreach \Ti in {1.0, 0.9, ..., 0} {
+        \draw[black!30, line width=0.25pt, variable=\t, domain=0:1, samples=13]
+          plot ({\fn(\t,\Ti)*\Fx + \t*\thx}, {\Ti*\Ty + \t*\thy});
+      }
+      \foreach \thi in {1.0, 0.9, ..., 0} {
+        \draw[black!30, line width=0.25pt, variable=\t, domain=0:1, samples=13]
+          plot ({\fn(\thi,\t)*\Fx + \thi*\thx}, {\t*\Ty + \thi*\thy});
+      }
+      \draw[cold, slicecurve, variable=\t, domain=0:1, samples=18]
+        plot ({\fn(\t,0.15)*\Fx + \t*\thx}, {0.15*\Ty + \t*\thy});
+      \draw[black!55, slicecurve, variable=\t, domain=0:1, samples=18]
+        plot ({\fn(\t,0.5)*\Fx + \t*\thx}, {0.5*\Ty + \t*\thy});
+      \draw[warm, slicecurve, variable=\t, domain=0:1, samples=18]
+        plot ({\fn(\t,0.85)*\Fx + \t*\thx}, {0.85*\Ty + \t*\thy});
+
+      % fixed theta-bar marker on each of the 3 slices
+      \foreach \Ti in {0.15, 0.5, 0.85} {
+        \fill[black] ({\fn(0.5,\Ti)*\Fx + 0.5*\thx}, {\Ti*\Ty + 0.5*\thy}) circle (1.6pt);
+      }
+
+      \node[smallnote, align=center, font=\normalsize, anchor=north] at (2, 2) {\large \textbf{\lbl}};
+    \end{scope}
+  }
+\end{scope}
+
+% ============================================================
+% ROW C -- (c) Resulting Jensen gap J(T) along the gradient
+% ============================================================
+\begin{scope}[shift={(1, 1.8)}]
+  % \node[title] at (-1, 9.4) {(b) \textbf{Jensen gap $J(T)$ at fixed $\bar\theta,\operatorname{Var}[\theta]$}};
+  \node[title] at (-1, 7.5) {(b)};
+
+  \def\pw{5.0}
+  \def\ph{4.8}
+  \def\jmid{2.5}
+  \def\jscale{2.1}
+  \def\colgap{6.5}
+  \def\warmShift{0.1}
+  % \draw[curr, line width=0.7pt] (18.0, \ph+1.6) -- ++(0.8, 0);
+  % \node[smallnote, anchor=west, font=\small] at (18.8, \ph+1.6)
+  %   {warmed $J(T+\Delta T)$};
+
+  % ---- Panel 1: Concave -- J>0 everywhere, peaks mid-gradient, ->0 at edges
+  \begin{scope}[shift={(1.0, 2.5)}]
+    \draw[ax] (0,0) -- (\pw,0) node[right, font=\large] {$J$};
+    \draw[guide] (\jmid, 0) -- (\jmid, \ph);
+    \node[warm, font=\Large, anchor=west] at (-1.5, 2.5) {\textbf{$J>0$}};
+    \node[cold, font=\Large, anchor=west] at (-1.5, 2) {\textbf{$J<0$}};
+    \node[smallnote, font=\large, anchor=west] at (4.1, 1.1) {Current};
+    \node[curr, font=\large, anchor=west] at (4.1, 4.2) {Warmed};
+    \node[smallnote, font=\large, anchor=north] at (\jmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\pw, -0.1) {$+$};
+    \draw[ax] (\jmid, \ph+0.1) -- (\jmid, -0.1);
+    \node[cold, font=\large, anchor=south] at (\jmid-0.75, \ph-0.5) {Cold};
+    \node[warm, font=\large, anchor=north] at (\jmid-0.75, 0.5) {Warm};
+    \path[fill=BrickRed, fill opacity=0.15, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jConcave(\t)}, {\ph*(1-\t)})
+      -- (\jmid, 0) -- (\jmid, \ph) -- cycle;
+    \draw[BrickRed, slicecurve, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jConcave(\t)}, {\ph*(1-\t)});
+    \draw[curr, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\jmid + \jscale*jConcave(\t+\warmShift)}, {\ph*(1-\t)});
+    % \node[BrickRed, font=\large] at (\jmid+0.5*\jscale, 0.7*\ph) {$J>0$ throughout};
+    % \node[smallnote, align=center, font=\small] at (\jmid, -1.0)
+    %   {curvature vanishes\\ at both margins};
+  \end{scope}
+
+  % ---- Panel 2: Gaussian -- J>0 everywhere, narrower peak
+  \begin{scope}[shift={(1.0+\colgap, 2.5)}]
+    \draw[ax] (0,0) -- (\pw,0) node[right, font=\large] {$J$};
+    \draw[guide] (\jmid, 0) -- (\jmid, \ph);
+    \node[smallnote, font=\large, anchor=north] at (\jmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\pw, -0.1) {$+$};
+    \draw[ax] (\jmid, \ph+0.1) -- (\jmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\jmid, \ph+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\jmid, -0.25) {Warm};
+    \path[fill=BrickRed, fill opacity=0.15, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jGauss(\t)}, {\ph*(1-\t)})
+      -- (\jmid, 0) -- (\jmid, \ph) -- cycle;
+    \draw[BrickRed, slicecurve, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jGauss(\t)}, {\ph*(1-\t)});
+    \draw[curr, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\jmid + \jscale*jGauss(\t+\warmShift)}, {\ph*(1-\t)});
+    % \node[BrickRed, font=\large] at (\jmid+0.5*\jscale, 0.7*\ph) {$J>0$ throughout};
+    % \node[smallnote, align=center, font=\small] at (\jmid, -1.0)
+    %   {narrower peak: bias\\ collapses faster off-core};
+  \end{scope}
+
+  % ---- Panel 3: Gaussian with T-opt shift -- J sign changes at extremes
+  \begin{scope}[shift={(1.0+2*\colgap, 2.5)}]
+    \pgfmathsetmacro{\zA}{0.3419}
+    \pgfmathsetmacro{\zB}{0.6581}
+    \draw[ax] (0,0) -- (\pw,0) node[right, font=\large] {$J$};
+    \draw[guide] (\jmid, 0) -- (\jmid, \ph);
+    \node[smallnote, font=\large, anchor=north] at (\jmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\pw, -0.1) {$+$};
+    \draw[ax] (\jmid, \ph+0.1) -- (\jmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\jmid, \ph+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\jmid, -0.25) {Warm};
+    % \draw[guide] (0, {\ph*(1-\zA)}) -- (\pw, {\ph*(1-\zA)});
+    % \draw[guide] (0, {\ph*(1-\zB)}) -- (\pw, {\ph*(1-\zB)});
+    \path[fill=MidnightBlue, fill opacity=0.15, variable=\t, domain=0:\zA, samples=12]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)})
+      -- (\jmid, {\ph*(1-\zA)}) -- (\jmid, \ph) -- cycle;
+    \path[fill=BrickRed, fill opacity=0.15, variable=\t, domain=\zA:\zB, samples=16]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)})
+      -- (\jmid, {\ph*(1-\zB)}) -- (\jmid, {\ph*(1-\zA)}) -- cycle;
+    \path[fill=MidnightBlue, fill opacity=0.15, variable=\t, domain=\zB:1, samples=12]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)})
+      -- (\jmid, 0) -- (\jmid, {\ph*(1-\zB)}) -- cycle;
+    \draw[MidnightBlue, slicecurve, variable=\t, domain=0:\zA, samples=12]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)});
+    \draw[BrickRed, slicecurve, variable=\t, domain=\zA:\zB, samples=16]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)});
+    \draw[MidnightBlue, slicecurve, variable=\t, domain=\zB:1, samples=12]
+      plot ({\jmid + \jscale*jGaussTopt(\t)}, {\ph*(1-\t)});
+    \draw[curr, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\jmid + \jscale*jGaussTopt(\t+\warmShift)}, {\ph*(1-\t)});
+    \fill[black] (\jmid, {\ph*(1-\zA)}) circle (1.6pt);
+    \fill[black] (\jmid, {\ph*(1-\zB)}) circle (1.6pt);
+    % \node[BrickRed, font=\large] at (\jmid+0.4*\jscale, \ph*0.5) {$J>0$};
+    % \node[MidnightBlue, font=\large] at (\jmid-0.4*\jscale, \ph*0.85) {$J<0$};
+    % \node[MidnightBlue, font=\large] at (\jmid-0.4*\jscale, \ph*0.15) {$J<0$};
+    % \node[smallnote, align=center, font=\small] at (\jmid, -1.0)
+    %   {each $\theta$ reaches the same\\ $F_{\max}$ at its own $T_{\text{opt}}$ $\Rightarrow$\\ bias reverses at extremes};
+  \end{scope}
+
+  % ---- Panel 4: Sigmoidal fixed -- J>0 everywhere, ramps up then plateaus
+  \begin{scope}[shift={(1.0+3*\colgap, 2.5)}]
+    \draw[ax] (0,0) -- (\pw,0) node[right, font=\large] {$J$};
+    \draw[guide] (\jmid, 0) -- (\jmid, \ph);
+    \node[smallnote, font=\large, anchor=north] at (\jmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\pw, -0.1) {$+$};
+    \draw[ax] (\jmid, \ph+0.1) -- (\jmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\jmid, \ph+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\jmid, -0.25) {Warm};
+    \path[fill=BrickRed, fill opacity=0.15, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jSig(\t)}, {\ph*(1-\t)})
+      -- (\jmid, 0) -- (\jmid, \ph) -- cycle;
+    \draw[BrickRed, slicecurve, variable=\t, domain=0:1, samples=24]
+      plot ({\jmid + \jscale*jSig(\t)}, {\ph*(1-\t)});
+    \draw[curr, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\jmid + \jscale*jSig(\t+\warmShift)}, {\ph*(1-\t)});
+    % \node[BrickRed, font=\large] at (\jmid+0.5*\jscale, 0.7*\ph) {$J>0$ throughout};
+    % \node[smallnote, align=center, font=\small] at (\jmid, -1.0)
+    %   {$\bar\theta$ stays on the same\\ side of a \emph{fixed} threshold};
+  \end{scope}
+
+  % ---- Panel 5: Shifting threshold -- SIGN REVERSAL at T=0.5
+  \begin{scope}[shift={(1.0+4*\colgap, 2.5)}]
+    \draw[ax] (0,0) -- (\pw,0) node[right, font=\large] {$J$};
+    \draw[guide] (\jmid, 0) -- (\jmid, \ph);
+    \node[smallnote, font=\large, anchor=north] at (\jmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\pw, -0.1) {$+$};
+    \draw[ax] (\jmid, \ph+0.1) -- (\jmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\jmid, \ph+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\jmid, -0.25) {Warm};
+    % \draw[guide] (0, \ph*0.5) -- (\pw, \ph*0.5);
+    \path[fill=BrickRed, fill opacity=0.15, variable=\t, domain=0:0.5, samples=24]
+      plot ({\jmid + \jscale*jShift(\t)}, {\ph*(1-\t)})
+      -- (\jmid, {\ph*0.5}) -- (\jmid, \ph) -- cycle;
+    \path[fill=MidnightBlue, fill opacity=0.15, variable=\t, domain=0.5:1, samples=24]
+      plot ({\jmid + \jscale*jShift(\t)}, {\ph*(1-\t)})
+      -- (\jmid, 0) -- (\jmid, {\ph*0.5}) -- cycle;
+    \draw[BrickRed, slicecurve, variable=\t, domain=0:0.5, samples=24]
+      plot ({\jmid + \jscale*jShift(\t)}, {\ph*(1-\t)});
+    \draw[MidnightBlue, slicecurve, variable=\t, domain=0.5:1, samples=24]
+      plot ({\jmid + \jscale*jShift(\t)}, {\ph*(1-\t)});
+    \draw[curr, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\jmid + \jscale*jShift(\t+\warmShift)}, {\ph*(1-\t)});
+    \fill[black] (\jmid, {\ph*0.5}) circle (1.6pt);
+    % \node[BrickRed, font=\large] at (\jmid+0.7*\jscale, \ph*0.75) {$J>0$};
+    % \node[MidnightBlue, font=\large] at (\jmid-0.7*\jscale, \ph*0.25) {$J<0$};
+    % \node[smallnote, align=center, font=\small] at (\jmid, -1.0)
+    %   {threshold sweeps past $\bar\theta$:\\ bias attenuates, crosses zero, reverses};
+  \end{scope}
+\end{scope}
+
+% ============================================================
+% ROW D -- (d) Change in |J| under warming
+% ============================================================
+\begin{scope}[shift={(1, -3.5)}]
+  % \node[title] at (-1, 8.5) {(c) \textbf{Change in bias magnitude: $\Delta|J| = |J_{\text{warmed}}| - |J_{\text{current}}|$}};
+  \node[title] at (-1, 6.5) {(c)};
+
+  \def\djw{5.0}
+  \def\djh{4.8}
+  \def\djmid{2.5}
+  \def\djscale{2.8}
+  \def\colgap{6.5}
+  \def\warmShift{0.1}
+
+  % \draw[curr, line width=0.7pt] (18.0, \djh+1.0) -- ++(0.7, 0);
+  % \node[smallnote, anchor=west, font=\small] at (18.7, \djh+1.0)
+  %   {$\Delta|J|$};
+
+  % ---- Panel 1: Concave
+  \begin{scope}[shift={(1.0, 1.5)}]
+    \node[viridismax, font=\large, anchor=west] at (-1.5, 2.7) {\textbf{amplification}};
+    \node[viridismin, font=\large, anchor=west] at (-1.5, 2.2) {\textbf{attenuation}};
+    \draw[ax] (0,0) -- (\djw,0) node[right, font=\large] {$\Delta|J|$};
+    \draw[guide] (\djmid, 0) -- (\djmid, \djh);
+    \node[smallnote, font=\large, anchor=north] at (\djmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\djw, -0.1) {$+$};
+    \draw[ax] (\djmid, \djh+0.1) -- (\djmid, -0.1);
+    \node[cold, font=\large, anchor=south] at (\djmid-1.85, \djh-0.5) {Cold};
+    \node[warm, font=\large, anchor=north] at (\djmid-1.85, 0.5) {Warm};
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0:0.45, samples=24]
+      plot ({\djmid + \djscale*(jConcave(\t+\warmShift)-jConcave(\t))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.45)}) -- (\djmid, \djh) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.45:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jConcave(\t+\warmShift)-jConcave(\t))}, {\djh*(1-\t)})
+      -- (\djmid, 0) -- (\djmid, {\djh*(1-0.45)}) -- cycle;
+    \draw[black!70, slicecurve, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jConcave(\t+\warmShift)-jConcave(\t))}, {\djh*(1-\t)});
+  \end{scope}
+
+  % ---- Panel 2: Gaussian
+  \begin{scope}[shift={(1.0+\colgap, 1.5)}]
+    \draw[ax] (0,0) -- (\djw,0) node[right, font=\large] {$\Delta|J|$};
+    \draw[guide] (\djmid, 0) -- (\djmid, \djh);
+    \node[smallnote, font=\large, anchor=north] at (\djmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\djw, -0.1) {$+$};
+    \draw[ax] (\djmid, \djh+0.1) -- (\djmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\djmid, \djh+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\djmid, -0.25) {Warm};
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0:0.45, samples=24]
+      plot ({\djmid + \djscale*(jGauss(\t+\warmShift)-jGauss(\t))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.45)}) -- (\djmid, \djh) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.45:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jGauss(\t+\warmShift)-jGauss(\t))}, {\djh*(1-\t)})
+      -- (\djmid, 0) -- (\djmid, {\djh*(1-0.45)}) -- cycle;
+    \draw[black!70, slicecurve, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jGauss(\t+\warmShift)-jGauss(\t))}, {\djh*(1-\t)});
+  \end{scope}
+
+  % ---- Panel 3: Gaussian with T-opt shift
+  \begin{scope}[shift={(1.0+2*\colgap, 1.5)}]
+    \draw[ax] (0,0) -- (\djw,0) node[right, font=\large] {$\Delta|J|$};
+    \draw[guide] (\djmid, 0) -- (\djmid, \djh);
+    \node[smallnote, font=\large, anchor=north] at (\djmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\djw, -0.1) {$+$};
+    \draw[ax] (\djmid, \djh+0.1) -- (\djmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\djmid, \djh+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\djmid, -0.25) {Warm};
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0:0.175, samples=16]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.175)}) -- (\djmid, \djh) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.175:0.283, samples=12]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.283)}) -- (\djmid, {\djh*(1-0.175)}) -- cycle;
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0.283:0.45, samples=16]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.45)}) -- (\djmid, {\djh*(1-0.283)}) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.45:0.617, samples=16]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.617)}) -- (\djmid, {\djh*(1-0.45)}) -- cycle;
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0.617:0.725, samples=12]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.725)}) -- (\djmid, {\djh*(1-0.617)}) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.725:{1-\warmShift}, samples=12]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, 0) -- (\djmid, {\djh*(1-0.725)}) -- cycle;
+    \draw[black!70, slicecurve, variable=\t, domain=0:{1-\warmShift}, samples=48]
+      plot ({\djmid + \djscale*(abs(jGaussTopt(\t+\warmShift))-abs(jGaussTopt(\t)))}, {\djh*(1-\t)});
+  \end{scope}
+
+  % ---- Panel 4: Sigmoidal fixed
+  \begin{scope}[shift={(1.0+3*\colgap, 1.5)}]
+    \draw[ax] (0,0) -- (\djw,0) node[right, font=\large] {$\Delta|J|$};
+    \draw[guide] (\djmid, 0) -- (\djmid, \djh);
+    \node[smallnote, font=\large, anchor=north] at (\djmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\djw, -0.1) {$+$};
+    \draw[ax] (\djmid, \djh+0.1) -- (\djmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\djmid, \djh+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\djmid, -0.25) {Warm};
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jSig(\t+\warmShift)-jSig(\t))}, {\djh*(1-\t)})
+      -- (\djmid, 0) -- (\djmid, \djh) -- cycle;
+    \draw[black!70, slicecurve, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(jSig(\t+\warmShift)-jSig(\t))}, {\djh*(1-\t)});
+  \end{scope}
+
+  % ---- Panel 5: Shifting threshold
+  \begin{scope}[shift={(1.0+4*\colgap, 1.5)}]
+    \draw[ax] (0,0) -- (\djw,0) node[right, font=\large] {$\Delta|J|$};
+    \draw[guide] (\djmid, 0) -- (\djmid, \djh);
+    \node[smallnote, font=\large, anchor=north] at (\djmid, -0.1) {$0$};
+    \node[smallnote, font=\large, anchor=north] at (0, -0.1) {$-$};
+    \node[smallnote, font=\large, anchor=north] at (\djw, -0.1) {$+$};
+    \draw[ax] (\djmid, \djh+0.1) -- (\djmid, -0.1);
+    % \node[cold, font=\normalsize, anchor=south] at (\djmid, \djh+0.2) {Cold};
+    % \node[warm, font=\normalsize, anchor=north] at (\djmid, -0.25) {Warm};
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0:0.268, samples=12]
+      plot ({\djmid + \djscale*(abs(jShift(\t+\warmShift))-abs(jShift(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.268)}) -- (\djmid, \djh) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.268:0.45, samples=12]
+      plot ({\djmid + \djscale*(abs(jShift(\t+\warmShift))-abs(jShift(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.45)}) -- (\djmid, {\djh*(1-0.268)}) -- cycle;
+    \path[fill=viridismax, fill opacity=0.3, variable=\t, domain=0.45:0.632, samples=16]
+      plot ({\djmid + \djscale*(abs(jShift(\t+\warmShift))-abs(jShift(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, {\djh*(1-0.632)}) -- (\djmid, {\djh*(1-0.45)}) -- cycle;
+    \path[fill=viridismin, fill opacity=0.3, variable=\t, domain=0.632:{1-\warmShift}, samples=12]
+      plot ({\djmid + \djscale*(abs(jShift(\t+\warmShift))-abs(jShift(\t)))}, {\djh*(1-\t)})
+      -- (\djmid, 0) -- (\djmid, {\djh*(1-0.632)}) -- cycle;
+    \draw[black!70, slicecurve, variable=\t, domain=0:{1-\warmShift}, samples=24]
+      plot ({\djmid + \djscale*(abs(jShift(\t+\warmShift))-abs(jShift(\t)))}, {\djh*(1-\t)});
+  \end{scope}
+\end{scope}
+
+\end{tikzpicture}
+\end{document}

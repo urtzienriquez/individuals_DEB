@@ -1,0 +1,43 @@
+\input{00_preamble}
+\addbibresource{references.bib}
+\addbibresource{packages.bib}
+
+\newif\iftexlab
+\iftexlab
+  \input{2_main.Rnw}
+  \input{3_appendix1.Rnw}
+  \input{4_appendix2.Rnw}
+  \input{5_appendix3.Rnw}
+\fi
+
+\begin{document}
+
+<<setup, include=FALSE>>=
+library(kableExtra)
+library(knitrmini)
+opts_chunk$set(
+  cache = 2,
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 6,
+  fig.height = 4,
+  fig.align = "center",
+  fig.pos = "!htb"
+)
+source("../R/source_results_manuscript.R")
+@
+
+<<child='2_main.Rnw', eval=TRUE>>=
+@
+
+<<child='3_appendix1.Rnw', eval=TRUE>>=
+@
+
+<<child='4_appendix2.Rnw', eval=TRUE>>=
+@
+
+<<child='5_appendix3.Rnw', eval=TRUE>>=
+@
+
+\end{document}

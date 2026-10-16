@@ -1,0 +1,26 @@
+\documentclass[multi=tikzpicture, border=0pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (plot) at (0,0)
+    {\includegraphics{../1_base/figS2-6-relative-bias-female.pdf}};
+  \begin{scope}[x={(plot.south east)}, y={(plot.north west)}]
+    % Column headers
+    \node[anchor=south] at (0.149, 1.01) {\large \textbf{Current climate}};
+    \node[anchor=south] at (0.448, 1.01) {\large \textbf{+2${}^{\circ}$C}};
+    \node[anchor=south] at (0.747, 1.01) {\large \textbf{+4${}^{\circ}$C}};
+
+    % Row labels (metric names with units)
+    \node[anchor=east] at (0.00, 0.833) {\large Lifespan (yr)};
+    \node[anchor=east] at (0.00, 0.500) {\large Max.\ body mass (g)};
+    \node[anchor=east] at (0.00, 0.167) {\large Lifetime fecundity (eggs)};
+
+    % Relative bias label at top
+    % \node[anchor=south] at (0.448, 1.07) {\Large Relative bias (\%): $(P_{\text{sp}} - P_{\text{ind}}) / |P_{\text{ind}}| \times 100$};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

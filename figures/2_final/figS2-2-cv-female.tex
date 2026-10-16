@@ -1,0 +1,26 @@
+\documentclass[multi=tikzpicture, border=0pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (plot) at (0,0)
+    {\includegraphics{../1_base/figS2-2-cv-female.pdf}};
+  \begin{scope}[x={(plot.south east)}, y={(plot.north west)}]
+    \node[anchor=south] at (0.125, 0.98) {\large Maximum body mass (g)};
+    \node[anchor=south] at (0.375, 0.98) {\large Maximum length (cm)};
+    \node[anchor=south] at (0.625, 0.98) {\large Minimum reserve (Joules)};
+    \node[anchor=south] at (0.875, 0.98) {\large Basking time (h d${}^{-1}$)};
+    \node[anchor=south] at (0.125, 0.65) {\large Foraging time (h d${}^{-1}$)};
+    \node[anchor=south] at (0.375, 0.65) {\large Food intake (g)};
+    \node[anchor=south] at (0.625, 0.65) {\large \(T_{b,max}\) (${}^{\circ}$C)};
+    \node[anchor=south] at (0.875, 0.65) {\large \(T_{b,min}\) (${}^{\circ}$C)};
+    \node[anchor=south] at (0.125, 0.31) {\large Daily water need (g~day$^{-1}$)};
+    \node[anchor=south] at (0.375, 0.31) {\large Lifespan (yr)};
+    \node[anchor=south] at (0.625, 0.31) {\large Lifetime fecundity (eggs)};
+    \node[anchor=south] at (0.875, 0.31) {\large Net reproductive rate};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

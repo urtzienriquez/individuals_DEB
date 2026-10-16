@@ -1,0 +1,284 @@
+\documentclass[12pt]{article}
+
+% page layout
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{lineno}
+
+% misc
+\usepackage{multirow}
+\usepackage{csquotes}
+
+\usepackage{microtype}
+% \overfullrule=5pt
+
+% graphics and colors
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+
+% small font size for captions
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+% math and tables
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\sisetup{retain-explicit-plus}
+\DeclareSIUnit{\eggs}{eggs}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\Otwo}{O\textsubscript{2}}
+
+% bibliography
+\usepackage[style=apa, backend=biber, uniquename=false, giveninits=false]{biblatex}
+% \usepackage[style=nature, backend=biber, uniquename=false, giveninits=false]{biblatex}
+
+% authors and affiliations
+\usepackage{authblk}
+\renewcommand*{\Affilfont}{\footnotesize\normalfont}
+
+% listings and text code formatting packages
+\usepackage{listings}
+
+% hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Blue,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue
+}
+
+% custom commands for title page
+\title{Beyond the average phenotype: individual variation alters mechanistic forecasts of climate responses}
+
+\author[1*]{Urtzi Enriquez-Urzelai}
+\author[1,2]{Gioele Pascucci}
+\author[1]{Lumír Gvoždík}
+
+\affil[1]{Czech Academy of Sciences, Institute of Vertebrate Biology, Brno, Czech Republic}
+\affil[2]{Department of Botany and Zoology, Faculty of Science, Masaryk University, Brno, Czech Republic}
+\affil[*]{Corresponding author: uenriquez@proton.me}
+\date{\vspace{-5ex}}
+
+\makeatletter
+% fix authblk spacing
+\renewcommand\AB@affilsepx{\protect\\\vspace{\baselineskip}\protect\Affilfont}
+
+% store title and author for appendix
+\let\papertitle\@title
+\let\paperauthors\@author
+
+% appendix title block
+\newcommand{\appendixtitleblock}[1]{
+  \begin{center}
+    {\Large\textbf{Appendix #1} \textit{for:} \papertitle}
+    \vskip 1em
+      {\large\paperauthors}
+  \end{center}
+  \vskip 1.5em
+}
+
+% image width constraint
+\def\maxwidth{%
+  \ifdim\Gin@nat@width>\textwidth
+    \textwidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+% custom counter for appendix cross-references
+\newcounter{appnum}
+
+% custom macro to setup the appendices
+\newcommand{\appendixsetup}[1]{
+  \setcounter{appnum}{\numexpr#1-1\relax}%
+  \refstepcounter{appnum}
+  \newpage
+  \ifdefined\nolinenumbers\nolinenumbers\fi
+  \setcounter{page}{1}
+  \newrefsection
+  \setcounter{section}{0}
+  \renewcommand{\theHsection}{app#1.\arabic{section}}
+  \renewcommand{\thefigure}{S#1.\arabic{figure}}
+  \renewcommand{\theHfigure}{S#1.\arabic{figure}}
+  \setcounter{figure}{0}
+  \renewcommand{\thetable}{S#1.\arabic{table}}
+  \renewcommand{\theHtable}{S#1.\arabic{table}}
+  \setcounter{table}{0}
+}
+\addbibresource{references.bib}
+\addbibresource{packages.bib}
+
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\begin{document}
+
+
+
+
+
+
+
+\appendixsetup{2}
+\appendixtitleblock{2}\label{appendix-params}
+
+{\centering \bfseries 
+\Large DEB model parameters and example simulations
+\par
+}
+
+
+
+\section{DEB core parameter analysis across individuals}
+
+We estimated Dynamic Energy Budget (DEB) model parameters for 37 \emph{I.~alpestris} individuals using the standard DEB model (std) \parencite{kooijman2010}. The standard DEB model is governed by 12 primary parameters that jointly determine the rates of assimilation, mobilisation, maintenance, growth, and reproduction \parencite{marques2018}. For the population-average parameterisation, seven of the 12 primary parameters were freed for estimation; the remaining five were held at their literature values. At the individual level, four parameters were allowed to vary: the zoom factors $z$ (female) and $z_m$ (male), the energy conductance $\dot{v}$, and the volume-specific somatic maintenance rate $[\dot{p}_M]$. All remaining parameters were held at their population-average values.
+
+The zoom factor $z$ scales maximum body size ($L_m = z \cdot L_{\text{ref}}$, with $L_{\text{ref}} = 1$~cm) and, through the physical covariation rules \parencite{kooijman2010}, simultaneously determines the maximum surface-specific assimilation rate $\{\dot{p}_{Am}\}$ and the maturity thresholds at birth ($E_H^b$) and puberty ($E_H^p$). Because $z$ (or $z_m$) and $[\dot{p}_M]$ vary among individuals while $\kappa$ is fixed, $\{\dot{p}_{Am}\}$ is not a free parameter but is derived from the individual estimates of $z$ and $[\dot{p}_M]$:
+
+\begin{equation}\label{eq:zvpM-pAm}
+\{\dot{p}_{Am}\} = \frac{z \cdot L_{\text{ref}} \cdot [\dot{p}_M]}{\kappa}
+\qquad
+  \mathrm{and}
+\qquad
+\{\dot{p}_{Am,m}\} = \frac{z_m \cdot L_{\text{ref}} \cdot [\dot{p}_M]}{\kappa}
+\end{equation}
+
+The complete set of parameter values is presented in \textbf{Table~\ref{tab:deb-params}}.
+
+\begin{table}[H]
+  \caption{DEB parameter values for \emph{I.~alpestris}: population-average estimates and individual ranges (min--max) across the 37 individuals.}
+  \label{tab:deb-params}
+  \centering\scriptsize\resizebox{\textwidth}{!}{%
+
+\begin{tabular}[t]{lllrrr}
+\toprule
+\multicolumn{4}{c}{ } & \multicolumn{2}{c}{Individuals} \\
+\cmidrule(l{3pt}r{3pt}){5-6}
+\multirow{2}{*}[2.3em]{Parameter} & \multirow{2}{*}[2.3em]{Symbol} & \multirow{2}{*}[2.3em]{Units} & \multirow{2}{*}[2.3em]{Population average} & Min & Max\\
+\midrule
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Primary parameters}}\\
+\hspace{1em}max spec searching rate & $\{\dot{F}_m\}$ & l\,d$^{-1}$\,cm$^{-2}$ & 6.5 & $-$ & $-$\\
+\hspace{1em}digestion efficiency of food to reserve & $\kappa_X$ & $-$ & 0.8 & $-$ & $-$\\
+\hspace{1em}max surface-specific assimilation rate & $\{\dot{p}_{Am}\}$ & J\,d$^{-1}$\,cm$^{-2}$ & 265.7 & 217.6 & 303.3\\
+\hspace{1em}energy conductance & $\dot{v}$ & cm\,d$^{-1}$ & 0.01914 & 0.01716 & 0.02134\\
+\hspace{1em}allocation fraction to soma & $\kappa$ & $-$ & 0.5914 & $-$ & $-$\\
+\hspace{1em}reproduction efficiency & $\kappa_R$ & $-$ & 0.95 & $-$ & $-$\\
+\hspace{1em}vol-spec somatic maint & $[\dot{p}_M]$ & J\,d$^{-1}$\,cm$^{-3}$ & 138.4 & 107.4 & 162.8\\
+\hspace{1em}surf-spec somatic maint & $\{\dot{p}_T\}$ & J\,d$^{-1}$\,cm$^{-2}$ & 0 & $-$ & $-$\\
+\hspace{1em}maturity maint rate coefficient & $\dot{k}_J$ & d$^{-1}$ & 0.002 & $-$ & $-$\\
+\hspace{1em}spec cost for structure & $[E_G]$ & J\,cm$^{-3}$ & 7302 & $-$ & $-$\\
+\hspace{1em}maturity at birth & $E_H^b$ & J & 6.126 & $-$ & $-$\\
+\hspace{1em}maturity at puberty for females & $E_H^p$ & J & $1.366 \times 10^{4}$ & $-$ & $-$\\
+\addlinespace[0.3em]
+\multicolumn{6}{l}{\textbf{Extended parameters}}\\
+\hspace{1em}zoom factor & $z$ & $-$ & 1.135 & 1.102 & 1.198\\
+\hspace{1em}zoom factor for males & $z_m$ & $-$ & 1.046 & 0.9978 & 1.118\\
+\hspace{1em}max surface-specific assimilation rate & $\{\dot{p}_{Am,m}\}$ & J\,d$^{-1}$\,cm$^{-2}$ & 244.8 & 191.9 & 307.9\\
+\hspace{1em}maturity at puberty for males & $E_{H,m}^p$ & J & 7474 & $-$ & $-$\\
+\hspace{1em}maturity at metam & $E_H^j$ & J & 334.2 & $-$ & $-$\\
+\hspace{1em}shape coefficient & $\delta_M$ & $-$ & 0.1878 & $-$ & $-$\\
+\hspace{1em}Weibull aging acceleration & $\ddot{h}_a$ & d$^{-2}$ & $6.475 \times 10^{-9}$ & $-$ & $-$\\
+\bottomrule
+\end{tabular}
+
+  }
+\end{table}
+
+\subsection{Parameter variability}
+
+
+
+The coefficient of variation (CV) quantifies relative variability across individuals. \textbf{Figure~\ref{fig:zvpM-cv}} shows the CV values sorted in descending order. Among the four free parameters, $[\dot{p}_M]$ exhibited the largest relative variation across individuals, followed by $\dot{v}$, while $z$ was the most conservative. The mean individual values deviated from the population-average estimate by 0.9\% for \(z\), -0.9\% for \(z_m\), 1\% for \(\dot{v}\), and -0.8\% for \([\dot{p}_M]\).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/1_base/param_zvpM_cv.pdf}
+  \caption{Coefficient of variation for each varying parameter.
+  $[\dot{p}_M]$ is the most variable parameter across individuals.}
+  \label{fig:zvpM-cv}
+\end{figure}
+
+\textbf{Figure~\ref{fig:zvpM-distribution}} shows the distribution of each parameter with the population-average value marked for reference. Most parameters were broadly distributed around the population-average estimate, indicating that the individual-level data span a wider range of physiological strategies than the single population-average value suggests.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/1_base/explore_zvpM_distribution.pdf}
+  \caption{Distribution of each varying parameter. The dashed line marks the
+  population-average estimate.}
+  \label{fig:zvpM-distribution}
+\end{figure}
+
+\newpage 
+
+\section{Fit of DEB models to the data}
+
+In \textbf{Fig.~\ref{fig:fit-growth}} and \textbf{Fig.~\ref{fig:fit-metabolism}} we show the fit of the model with the final set of estimated parameters for the population-average parameterisation (for each sex in different colours) and for four selected females and males.
+
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS1-growth.pdf}
+  \end{center}
+  \caption{Model predictions of growth for the population-average parameterisation (\textit{blue}: males; \textit{red}: females) and eight selected individuals.}\label{fig:fit-growth}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS1-metabolism.pdf}
+  \end{center}
+  \caption{Model predictions for metabolic rates for the population-average parameterisation (\textit{blue}: males; \textit{red}: females) and eight selected individuals.}\label{fig:fit-metabolism}
+\end{figure}
+
+\newpage
+
+\section{Growth trajectories}
+
+Individual 20-year DEB growth simulations at the \textbf{(a)} Czech reference site (\ang{49.2247}\,N, \ang{16.0579}\,E; \qty{600}{m} a.s.l.) and \textbf{(b)} at a comparatively warmer site in Northern Spain (inside the known distribution of the species). A vertical dashed line marks when individuals reached puberty (first hour where maturity \ensuremath{E_H} exceeds the puberty threshold \ensuremath{E_H^p}). We present example simulations for females first (with the population-average parameters, and for four selected individuals) and then for males (population-average parameters first and for individual-level parameters after). Note that the selected individuals correspond to the individuals shown in \textbf{Figs.~\ref{fig:fit-growth}} and \textbf{\ref{fig:fit-metabolism}}.
+
+\newcommand{\growthfigure}[3]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/1_base/growth_#1.pdf}
+    \caption{Growth trajectory for #2.}
+    \label{#3}
+  \end{figure}%
+}
+
+\growthfigure{sp}{the population-average parameterisation (female)}{fig:growth-1}
+
+\growthfigure{8045}{PID 8045 (female)}{fig:growth-2}
+
+\growthfigure{8050}{PID 8050 (female)}{fig:growth-3}
+
+\growthfigure{8069}{PID 8069 (female)}{fig:growth-4}
+
+\growthfigure{8078}{PID 8078 (female)}{fig:growth-5}
+
+\growthfigure{sp_male}{the population-average parameterisation (male)}{fig:growth-6}
+
+\growthfigure{8046}{PID 8046 (male)}{fig:growth-7}
+
+\growthfigure{8053}{PID 8053 (male)}{fig:growth-8}
+
+\growthfigure{8058}{PID 8058 (male)}{fig:growth-9}
+
+\growthfigure{8073}{PID 8073 (male)}{fig:growth-10}
+
+% REFERENCES section
+\printbibliography[heading=bibnumbered, title={References}]
+
+
+
+\end{document}

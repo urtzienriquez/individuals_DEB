@@ -1,0 +1,264 @@
+% !TeX root = 1_index.Rnw
+\appendixsetup{2}
+\appendixtitleblock{2}\label{appendix-params}
+
+{\centering \bfseries 
+\Large DEB model parameters and example simulations
+\par
+}
+
+<<zvpM-setup, include=FALSE>>=
+source("../R/parse_ind_pars.R")
+varying <- result[-1][sapply(result[-1], function(x) length(unique(x)) > 1)]
+
+d <- read.table("../raw_data/Baskiera_Gvozdik_Dataset_B.txt", header = TRUE)
+sex_map <- aggregate(Sex ~ ID, data = d, FUN = function(x)
+  names(which.max(table(x))))
+result$individual <- as.integer(result$individual)
+result <- merge(result, sex_map, by.x = "individual", by.y = "ID", all.x = TRUE)
+
+# Population-average reference values
+source("../R/utils.R")
+species_par    <- parse_species_pars("../sp_keep/pars_init_Ichthyosaura_alpestris.m")
+species_labels <- parse_species_labels("../sp_keep/pars_init_Ichthyosaura_alpestris.m")
+
+free_params <- names(varying)
+kap_sp   <- species_par["kap"]
+v_sp     <- species_par["v"]
+del_M_sp <- species_par["del_M"]
+f_sp     <- species_par["f"]
+z_sp     <- species_par["z"]
+z_m_sp   <- species_par["z_m"]
+p_M_sp   <- species_par["p_M"]
+L_ref    <- 1
+
+@
+
+\section{DEB core parameter analysis across individuals}
+
+We estimated Dynamic Energy Budget (DEB) model parameters for 37 \emph{I.~alpestris} individuals using the standard DEB model (std) \parencite{kooijman2010}. The standard DEB model is governed by 12 primary parameters that jointly determine the rates of assimilation, mobilisation, maintenance, growth, and reproduction \parencite{marques2018}. For the population-average parameterisation, seven of the 12 primary parameters were freed for estimation; the remaining five were held at their literature values. At the individual level, four parameters were allowed to vary: the zoom factors $z$ (female) and $z_m$ (male), the energy conductance $\dot{v}$, and the volume-specific somatic maintenance rate $[\dot{p}_M]$. All remaining parameters were held at their population-average values.
+
+The zoom factor $z$ scales maximum body size ($L_m = z \cdot L_{\text{ref}}$, with $L_{\text{ref}} = 1$~cm) and, through the physical covariation rules \parencite{kooijman2010}, simultaneously determines the maximum surface-specific assimilation rate $\{\dot{p}_{Am}\}$ and the maturity thresholds at birth ($E_H^b$) and puberty ($E_H^p$). Because $z$ (or $z_m$) and $[\dot{p}_M]$ vary among individuals while $\kappa$ is fixed, $\{\dot{p}_{Am}\}$ is not a free parameter but is derived from the individual estimates of $z$ and $[\dot{p}_M]$:
+
+\begin{equation}\label{eq:zvpM-pAm}
+\{\dot{p}_{Am}\} = \frac{z \cdot L_{\text{ref}} \cdot [\dot{p}_M]}{\kappa}
+\qquad
+  \mathrm{and}
+\qquad
+\{\dot{p}_{Am,m}\} = \frac{z_m \cdot L_{\text{ref}} \cdot [\dot{p}_M]}{\kappa}
+\end{equation}
+
+The complete set of parameter values is presented in \textbf{Table~\ref{tab:deb-params}}.
+
+\begin{table}[H]
+  \caption{DEB parameter values for \emph{I.~alpestris}: population-average estimates and individual ranges (min--max) across the 37 individuals.}
+  \label{tab:deb-params}
+  \centering\scriptsize\resizebox{\textwidth}{!}{%
+<<deb-params, results='asis'>>=
+# derived assimilation rates (p_M varies individually)
+result$p_Am   <- result$z   * L_ref * result$p_M / kap_sp
+result$p_Am_m <- result$z_m * L_ref * result$p_M / kap_sp
+p_Am_sp   <- species_par["z"]   * L_ref * species_par["p_M"] / kap_sp
+p_Am_m_sp <- species_par["z_m"] * L_ref * species_par["p_M"] / kap_sp
+
+all_pars <- c(
+  "F_m", "kap_X", "p_Am", "v", "kap", "kap_R",
+  "p_M", "p_T", "k_J", "E_G", "E_Hb", "E_Hp",
+  "z", "z_m", "p_Am_m", "E_Hpm", "E_Hj", "del_M", "h_a"
+)
+
+param_latex <- c(
+  F_m    = "$\\{\\dot{F}_m\\}$",
+  kap_X  = "$\\kappa_X$",
+  p_Am   = "$\\{\\dot{p}_{Am}\\}$",
+  v      = "$\\dot{v}$",
+  kap    = "$\\kappa$",
+  kap_R  = "$\\kappa_R$",
+  p_M    = "$[\\dot{p}_M]$",
+  p_T    = "$\\{\\dot{p}_T\\}$",
+  k_J    = "$\\dot{k}_J$",
+  E_G    = "$[E_G]$",
+  E_Hb   = "$E_H^b$",
+  E_Hp   = "$E_H^p$",
+  z      = "$z$",
+  z_m    = "$z_m$",
+  p_Am_m = "$\\{\\dot{p}_{Am,m}\\}$",
+  E_Hpm  = "$E_{H,m}^p$",
+  E_Hj   = "$E_H^j$",
+  del_M  = "$\\delta_M$",
+  h_a    = "$\\ddot{h}_a$"
+)
+
+param_units_latex <- c(
+  F_m    = "l\\,d$^{-1}$\\,cm$^{-2}$",
+  kap_X  = "$-$",
+  p_Am   = "J\\,d$^{-1}$\\,cm$^{-2}$",
+  v      = "cm\\,d$^{-1}$",
+  kap    = "$-$",
+  kap_R  = "$-$",
+  p_M    = "J\\,d$^{-1}$\\,cm$^{-3}$",
+  p_T    = "J\\,d$^{-1}$\\,cm$^{-2}$",
+  k_J    = "d$^{-1}$",
+  E_G    = "J\\,cm$^{-3}$",
+  E_Hb   = "J",
+  E_Hp   = "J",
+  z      = "$-$",
+  z_m    = "$-$",
+  p_Am_m = "J\\,d$^{-1}$\\,cm$^{-2}$",
+  E_Hpm  = "J",
+  E_Hj   = "J",
+  del_M  = "$-$",
+  h_a    = "d$^{-2}$"
+)
+
+derived_labels <- c(
+  p_Am   = "max surface-specific assimilation rate",
+  p_Am_m = "max surface-specific assimilation rate"
+)
+
+to_latex_sci <- function(x) {
+  sapply(x, function(v) {
+    if (is.na(v)) return("$-$")
+    fv <- signif(v, 4)
+    if (fv == 0) return("0")
+    if (abs(fv) < 0.001 || abs(fv) >= 10000) {
+      sci <- format(fv, scientific = TRUE, trim = TRUE)
+      parts <- strsplit(sci, "e")[[1]]
+      mantissa <- parts[1]
+      exponent <- gsub("^\\+", "", parts[2])
+      exponent <- gsub("^(-?)0+(\\d+)$", "\\1\\2", exponent)
+      sprintf("$%s \\times 10^{%s}$", mantissa, exponent)
+    } else format(fv, scientific = FALSE, trim = TRUE)
+  })
+}
+
+sp_all <- species_par
+sp_all["p_Am"]   <- p_Am_sp
+sp_all["p_Am_m"] <- p_Am_m_sp
+
+ind_min <- sapply(all_pars, function(p) {
+  if (p %in% names(result) && sd(result[[p]]) > 0) min(result[[p]]) else NA
+})
+ind_max <- sapply(all_pars, function(p) {
+  if (p %in% names(result) && sd(result[[p]]) > 0) max(result[[p]]) else NA
+})
+
+lbls <- sapply(all_pars, function(p) {
+  if (p %in% names(derived_labels)) return(derived_labels[p])
+  lab <- species_labels[p]
+  if (is.na(lab)) return(p)
+  lab <- gsub("^\\{[^}]+\\},\\s*", "", lab)
+  lab <- gsub("^\\[[^]]+\\],\\s*", "", lab)
+  gsub("_", "\\\\_", lab)
+})
+
+param_table <- data.frame(
+  Parameter = unname(lbls),
+  Symbol    = unname(param_latex[all_pars]),
+  Units     = unname(param_units_latex[all_pars]),
+  Species   = to_latex_sci(sp_all[all_pars]),
+  Min       = ifelse(is.na(ind_min), "$-$", to_latex_sci(ind_min)),
+  Max       = ifelse(is.na(ind_max), "$-$", to_latex_sci(ind_max)),
+  stringsAsFactors = FALSE
+)
+
+knitrmini::kable(param_table, booktabs = TRUE, escape = FALSE, linesep = "",
+                 row.names = FALSE, raw = TRUE,
+                 align = c("l", "l", "l", "r", "r", "r"),
+                 col.names = c("\\multirow{2}{*}[2.3em]{Parameter}",
+                               "\\multirow{2}{*}[2.3em]{Symbol}",
+                               "\\multirow{2}{*}[2.3em]{Units}",
+                               "\\multirow{2}{*}[2.3em]{Population average}",
+                               "Min", "Max")) |>
+  kableExtra::add_header_above(c(" " = 4, "Individuals" = 2)) |>
+  kableExtra::pack_rows("Primary parameters", 1, 12) |>
+  kableExtra::pack_rows("Extended parameters", 13, 19) |>
+  cat(sep = "\n")
+@
+  }
+\end{table}
+
+\subsection{Parameter variability}
+
+<<cv-values>>=
+cv <- sort(sapply(varying, function(x) sd(x) / mean(x) * 100), decreasing = TRUE)
+@
+
+The coefficient of variation (CV) quantifies relative variability across individuals. \textbf{Figure~\ref{fig:zvpM-cv}} shows the CV values sorted in descending order. Among the four free parameters, \Sexpr{param_latex[names(cv)[1]]} exhibited the largest relative variation across individuals, followed by \Sexpr{param_latex[names(cv)[2]]}, while \Sexpr{param_latex[names(cv)[4]]} was the most conservative. The mean individual values deviated from the population-average estimate by \Sexpr{round((mean(result$z) - z_sp) / z_sp * 100, 1)}\% for \(z\), \Sexpr{round((mean(result$z_m) - z_m_sp) / z_m_sp * 100, 1)}\% for \(z_m\), \Sexpr{round((mean(result$v) - v_sp) / v_sp * 100, 1)}\% for \(\dot{v}\), and \Sexpr{round((mean(result$p_M) - p_M_sp) / p_M_sp * 100, 1)}\% for \([\dot{p}_M]\).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{../figures/1_base/param_zvpM_cv.pdf}
+  \caption{Coefficient of variation for each varying parameter.
+  \Sexpr{param_latex[names(cv)[1]]} is the most variable parameter across individuals.}
+  \label{fig:zvpM-cv}
+\end{figure}
+
+\textbf{Figure~\ref{fig:zvpM-distribution}} shows the distribution of each parameter with the population-average value marked for reference. Most parameters were broadly distributed around the population-average estimate, indicating that the individual-level data span a wider range of physiological strategies than the single population-average value suggests.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{../figures/1_base/explore_zvpM_distribution.pdf}
+  \caption{Distribution of each varying parameter. The dashed line marks the
+  population-average estimate.}
+  \label{fig:zvpM-distribution}
+\end{figure}
+
+\newpage 
+
+\section{Fit of DEB models to the data}
+
+In \textbf{Fig.~\ref{fig:fit-growth}} and \textbf{Fig.~\ref{fig:fit-metabolism}} we show the fit of the model with the final set of estimated parameters for the population-average parameterisation (for each sex in different colours) and for four selected females and males.
+
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=\textwidth]{../figures/2_final/figS1-growth.pdf}
+  \end{center}
+  \caption{Model predictions of growth for the population-average parameterisation (\textit{blue}: males; \textit{red}: females) and eight selected individuals.}\label{fig:fit-growth}
+\end{figure}
+
+\begin{figure}[H]
+  \begin{center}
+    \includegraphics[width=\textwidth]{../figures/2_final/figS1-metabolism.pdf}
+  \end{center}
+  \caption{Model predictions for metabolic rates for the population-average parameterisation (\textit{blue}: males; \textit{red}: females) and eight selected individuals.}\label{fig:fit-metabolism}
+\end{figure}
+
+\newpage
+
+\section{Growth trajectories}
+
+Individual 20-year DEB growth simulations at the \textbf{(a)} Czech reference site (\ang{49.2247}\,N, \ang{16.0579}\,E; \qty{600}{m} a.s.l.) and \textbf{(b)} at a comparatively warmer site in Northern Spain (inside the known distribution of the species). A vertical dashed line marks when individuals reached puberty (first hour where maturity \ensuremath{E_H} exceeds the puberty threshold \ensuremath{E_H^p}). We present example simulations for females first (with the population-average parameters, and for four selected individuals) and then for males (population-average parameters first and for individual-level parameters after). Note that the selected individuals correspond to the individuals shown in \textbf{Figs.~\ref{fig:fit-growth}} and \textbf{\ref{fig:fit-metabolism}}.
+
+\newcommand{\growthfigure}[3]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{../figures/1_base/growth_#1.pdf}
+    \caption{Growth trajectory for #2.}
+    \label{#3}
+  \end{figure}%
+}
+
+\growthfigure{sp}{the population-average parameterisation (female)}{fig:growth-1}
+
+\growthfigure{8045}{PID 8045 (female)}{fig:growth-2}
+
+\growthfigure{8050}{PID 8050 (female)}{fig:growth-3}
+
+\growthfigure{8069}{PID 8069 (female)}{fig:growth-4}
+
+\growthfigure{8078}{PID 8078 (female)}{fig:growth-5}
+
+\growthfigure{sp_male}{the population-average parameterisation (male)}{fig:growth-6}
+
+\growthfigure{8046}{PID 8046 (male)}{fig:growth-7}
+
+\growthfigure{8053}{PID 8053 (male)}{fig:growth-8}
+
+\growthfigure{8058}{PID 8058 (male)}{fig:growth-9}
+
+\growthfigure{8073}{PID 8073 (male)}{fig:growth-10}
+
+% REFERENCES section
+\printbibliography[heading=bibnumbered, title={References}]

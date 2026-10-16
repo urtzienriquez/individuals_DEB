@@ -1,0 +1,225 @@
+\documentclass[12pt]{article}
+
+% page layout
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{lineno}
+
+% misc
+\usepackage{multirow}
+\usepackage{csquotes}
+
+\usepackage{microtype}
+% \overfullrule=5pt
+
+% graphics and colors
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+
+% small font size for captions
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+% math and tables
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\sisetup{retain-explicit-plus}
+\DeclareSIUnit{\eggs}{eggs}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\Otwo}{O\textsubscript{2}}
+
+% bibliography
+\usepackage[style=apa, backend=biber, uniquename=false, giveninits=false]{biblatex}
+% \usepackage[style=nature, backend=biber, uniquename=false, giveninits=false]{biblatex}
+
+% authors and affiliations
+\usepackage{authblk}
+\renewcommand*{\Affilfont}{\footnotesize\normalfont}
+
+% listings and text code formatting packages
+\usepackage{listings}
+
+% hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Blue,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue
+}
+
+% custom commands for title page
+\title{Beyond the average phenotype: individual variation alters mechanistic forecasts of climate responses}
+
+\author[1*]{Urtzi Enriquez-Urzelai}
+\author[1,2]{Gioele Pascucci}
+\author[1]{Lumír Gvoždík}
+
+\affil[1]{Czech Academy of Sciences, Institute of Vertebrate Biology, Brno, Czech Republic}
+\affil[2]{Department of Botany and Zoology, Faculty of Science, Masaryk University, Brno, Czech Republic}
+\affil[*]{Corresponding author: uenriquez@proton.me}
+\date{\vspace{-5ex}}
+
+\makeatletter
+% fix authblk spacing
+\renewcommand\AB@affilsepx{\protect\\\vspace{\baselineskip}\protect\Affilfont}
+
+% store title and author for appendix
+\let\papertitle\@title
+\let\paperauthors\@author
+
+% appendix title block
+\newcommand{\appendixtitleblock}[1]{
+  \begin{center}
+    {\Large\textbf{Appendix #1} \textit{for:} \papertitle}
+    \vskip 1em
+      {\large\paperauthors}
+  \end{center}
+  \vskip 1.5em
+}
+
+% image width constraint
+\def\maxwidth{%
+  \ifdim\Gin@nat@width>\textwidth
+    \textwidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+% custom counter for appendix cross-references
+\newcounter{appnum}
+
+% custom macro to setup the appendices
+\newcommand{\appendixsetup}[1]{
+  \setcounter{appnum}{\numexpr#1-1\relax}%
+  \refstepcounter{appnum}
+  \newpage
+  \ifdefined\nolinenumbers\nolinenumbers\fi
+  \setcounter{page}{1}
+  \newrefsection
+  \setcounter{section}{0}
+  \renewcommand{\theHsection}{app#1.\arabic{section}}
+  \renewcommand{\thefigure}{S#1.\arabic{figure}}
+  \renewcommand{\theHfigure}{S#1.\arabic{figure}}
+  \setcounter{figure}{0}
+  \renewcommand{\thetable}{S#1.\arabic{table}}
+  \renewcommand{\theHtable}{S#1.\arabic{table}}
+  \setcounter{table}{0}
+}
+\addbibresource{references.bib}
+\addbibresource{packages.bib}
+
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\begin{document}
+
+
+
+
+
+
+
+
+
+\appendixsetup{3}
+\appendixtitleblock{3}\label{appendix-results}
+
+{\centering \bfseries 
+\Large Additional Results 
+\par
+}
+
+\section{Jensen bias for males}
+
+\textbf{Figure~\ref{fig:map-jensen-M}} shows the spatial distribution of Jensen bias ($J$) between population-average and individual-level prediction surfaces for males under current European climate. While the population-average DEB parameterisation underestimated most performance metrics for females (\textbf{Fig.~2}), the pattern for males was largely opposite: overestimation dominated for body size, reserve, food, reproductive energy and basking metrics, whereas maximum and minimum body temperature showed the reverse pattern. Foraging time was more balanced, with similar proportions of positive and negative bias across the range. The magnitude and direction of Jensen bias therefore depended strongly on both sex and ecological performance metric.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-1-jensen-male.pdf}
+  \caption{Jensen bias ($J$) between population-average and individual-level prediction surfaces for males. Values close to zero indicate close agreement; departures from zero indicate systematic differences in the spatial pattern. The colour scale is symmetric and centred at zero. The black outline delimits the current distribution of \emph{I.~alpestris} \parencite{iucn2021}. $T_b$, body temperature.}
+  \label{fig:map-jensen-M}
+\end{figure}
+
+\newpage
+
+\section{Coefficient of variation maps}
+
+The coefficient of variation (CV) across the 37 individual-level predictions quantifies the degree of physiological heterogeneity independent of Jensen bias. High CV values identify regions and metrics where individual variation most strongly influences predicted outcomes.
+
+\subsection{Females}
+
+For females, CV was highest toward the range margins for most performance metrics (\textbf{Fig.~\ref{fig:map-cv}}), indicating that the ecological consequences of individual physiological variation were spatially structured rather than uniform across the landscape.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-2-cv-female.pdf}
+  \caption{Coefficient of variation (CV) across individual-level predictions for females. Each panel shows the spatial distribution of CV for one performance metric. Higher values indicate greater individual-level variation in that metric across the geographic range. The black outline delimits the current distribution of \emph{I.~alpestris} \parencite{iucn2021}. $T_b$, body temperature.}
+  \label{fig:map-cv}
+\end{figure}
+
+\subsection{Males}
+
+A similar spatial pattern was observed for males (\textbf{Fig.~\ref{fig:map-cv-male}}), with CV values peaking at range margins for most metrics, consistent with the pattern observed in females.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-3-cv-male.pdf}
+  \caption{Coefficient of variation ($CV$) across individual-level predictions for males. Each panel shows the spatial distribution of $CV$ for one performance metric. Higher values indicate greater individual-level variation in that metric across the geographic range. The black outline delimits the current distribution of \emph{I.~alpestris} \parencite{iucn2021}. $T_b$, body temperature.}
+  \label{fig:map-cv-male}
+\end{figure}
+
+\newpage
+
+\section{Climate warming reshapes Jensen bias (males)}
+
+Climate warming altered the magnitude of Jensen bias for all twelve male performance metrics (\textbf{Fig.~\ref{fig:map-jensen-warming-M}}), mirroring the pattern observed for females (\textbf{Fig.~3}). However, as for females, warming did not produce a uniform response: the strongest relative amplification occurred for minimum body temperature and maximum body temperature, whereas lifespan ($-1\%$) was attenuated. The sign of $J$ changed in a substantial proportion of cells under \qty{+4}{\celsius} warming, with highest rates for basking time, foraging time and minimum reserve. Even under \qty{+2}{\celsius} warming, the direction of change was already discernible for most metrics, with 11 of the 12 metrics showing increased $|J|$ and 1 metric (lifespan) switching from amplification at \qty{+2}{\celsius} to attenuation at \qty{+4}{\celsius}, suggesting a nonlinear threshold in the averaging bias.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-4-warming-male.pdf}
+   \caption{Jensen bias amplification under \qty{+4}{\celsius} warming for males. Each map displays the change in absolute Jensen bias ($\Delta|J|$, left, with colour bar) for each performance metric. The curve (descriptive GAM smoother) at the right of each map represents how $\Delta|J|$ changes along the mean annual temperature ($\overline{T}_a$) gradient. \textit{Yellow} shading (positive $\Delta|J|$) indicates amplification of the averaging bias under warming, while \textit{purple} shading (negative $\Delta|J|$) indicates attenuation. The black outline delimits the current distribution of \emph{I.~alpestris} \parencite{iucn2021}. $T_b$, body temperature.}
+  \label{fig:map-jensen-warming-M}
+\end{figure}
+
+\newpage
+
+\section{Consequences for ecological forecasts (males)}
+
+Jensen bias produced trait-specific differences between population-average and individual-level forecasts for males under both current and future climates (\textbf{Fig.~\ref{fig:map-suitability-M}}), mirroring the female pattern (\textbf{Fig.~4}). Reproductive energy exhibited the largest discrepancies, with the population-average model generally overpredicting relative to the individual-level mean under the current climate. Lifespan showed a consistent tendency for the population-average model to predict higher values than the individual-level mean across climate scenarios, whereas maximum body mass showed comparatively close agreement, indicating relatively weak consequences of physiological averaging for this trait. The relative bias maps (\textbf{Figs.~\ref{fig:pct-diff-F}, \ref{fig:pct-diff-M}}) express the same comparison as a percentage of the individual-level mean, making the spatial structure of the disagreement visible.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-5-species-vs-ind-male.pdf}
+  \caption{Comparison of population-average and mean individual-level predictions for lifespan, maximum body mass and reproductive energy for males under current, \qty{+2}{\celsius} and \qty{+4}{\celsius} climate scenarios. For each metric, the top row shows the raw predicted values for all six parameterisation--climate combinations on a shared scale. At the bottom, we show the change relative to current climates for the warming scenarios ($P_\mathrm{future} - P_\mathrm{current}$) on a normalised scale $[-1, 1]$ (\textit{blue} indicates decrease, while \textit{red} indicates increase). The black outline delimits the current distribution of \emph{I.~alpestris} \parencite{iucn2021}.}
+  \label{fig:map-suitability-M}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-6-relative-bias-female.pdf}
+  \caption{Relative bias (\%) between population-average and individual-level predictions for females across current, +2\,${}^{\circ}$C and +4\,${}^{\circ}$C scenarios. Relative bias is computed as $R = (P_{\mathrm{pop}} - \overline{P}_{\mathrm{ind}}) / |\overline{P}_{\mathrm{ind}}| \times 100$ for each grid cell. Blue indicates underestimation by the population-average model ($R < 0$); red indicates overestimation ($R > 0$); white indicates close agreement ($R \approx 0$).}
+  \label{fig:pct-diff-F}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{/home/urtzi/Documents/papers/individuals_DEB/figures/2_final/figS2-7-relative-bias-male.pdf}
+  \caption{Relative bias (\%) between population-average and individual-level predictions for males, as in \textbf{Fig.~\ref{fig:pct-diff-F}} but showing lifespan, maximum body mass and reproductive energy.}
+  \label{fig:pct-diff-M}
+\end{figure}
+
+% REFERENCES section
+\printbibliography[heading=bibnumbered, title={References}]
+
+\end{document}

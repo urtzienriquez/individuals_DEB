@@ -1,0 +1,26 @@
+\documentclass[multi=tikzpicture, border=0pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (plot) at (0,0)
+    {\includegraphics{../1_base/fig2-jensen-female.pdf}};
+  \begin{scope}[x={(plot.south east)}, y={(plot.north west)}]
+    \node[anchor=south] at (0.100, 0.98) {Maximum body mass (g)};
+    \node[anchor=south] at (0.355, 0.98) {Maximum length (cm)};
+    \node[anchor=south] at (0.600, 0.98) {Minimum reserve (Joules)};
+    \node[anchor=south] at (0.855, 0.98) {Basking time (h)};
+    \node[anchor=south] at (0.100, 0.64) {Foraging time (h)};
+    \node[anchor=south] at (0.355, 0.64) {Food intake (g)};
+    \node[anchor=south] at (0.600, 0.64) {\(T_{b,max}\) (${}^{\circ}$C)};
+    \node[anchor=south] at (0.855, 0.64) {\(T_{b,min}\) (${}^{\circ}$C)};
+    \node[anchor=south] at (0.100, 0.31) {Daily water need (g~day$^{-1}$)};
+    \node[anchor=south] at (0.355, 0.31) {Lifespan (yr)};
+    \node[anchor=south] at (0.600, 0.31) {Lifetime fecundity (eggs)};
+    \node[anchor=south] at (0.855, 0.31) {Net reproductive rate};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

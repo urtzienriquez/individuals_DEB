@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+
+% page layout
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{lineno}
+
+% misc
+\usepackage{multirow}
+\usepackage{csquotes}
+
+\usepackage{microtype}
+% \overfullrule=5pt
+
+% graphics and colors
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+
+% small font size for captions
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+% math and tables
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\sisetup{retain-explicit-plus}
+\DeclareSIUnit{\eggs}{eggs}
+\DeclareSIUnit{\year}{year}
+\DeclareSIUnit{\Otwo}{O\textsubscript{2}}
+
+% bibliography
+\usepackage[style=apa, backend=biber, uniquename=false, giveninits=false]{biblatex}
+% \usepackage[style=nature, backend=biber, uniquename=false, giveninits=false]{biblatex}
+
+% authors and affiliations
+\usepackage{authblk}
+\renewcommand*{\Affilfont}{\footnotesize\normalfont}
+
+% listings and text code formatting packages
+\usepackage{listings}
+
+% hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=Blue,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue
+}
+
+% custom commands for title page
+\input{01_titlepage}
+\date{\vspace{-5ex}}
+
+\makeatletter
+% fix authblk spacing
+\renewcommand\AB@affilsepx{\protect\\\vspace{\baselineskip}\protect\Affilfont}
+
+% store title and author for appendix
+\let\papertitle\@title
+\let\paperauthors\@author
+
+% appendix title block
+\newcommand{\appendixtitleblock}[1]{
+  \begin{center}
+    {\Large\textbf{Appendix #1} \textit{for:} \papertitle}
+    \vskip 1em
+      {\large\paperauthors}
+  \end{center}
+  \vskip 1.5em
+}
+
+% image width constraint
+\def\maxwidth{%
+  \ifdim\Gin@nat@width>\textwidth
+    \textwidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+% custom counter for appendix cross-references
+\newcounter{appnum}
+
+% custom macro to setup the appendices
+\newcommand{\appendixsetup}[1]{
+  \setcounter{appnum}{\numexpr#1-1\relax}%
+  \refstepcounter{appnum}
+  \newpage
+  \ifdefined\nolinenumbers\nolinenumbers\fi
+  \setcounter{page}{1}
+  \newrefsection
+  \setcounter{section}{0}
+  \renewcommand{\theHsection}{app#1.\arabic{section}}
+  \renewcommand{\thefigure}{S#1.\arabic{figure}}
+  \renewcommand{\theHfigure}{S#1.\arabic{figure}}
+  \setcounter{figure}{0}
+  \renewcommand{\thetable}{S#1.\arabic{table}}
+  \renewcommand{\theHtable}{S#1.\arabic{table}}
+  \setcounter{table}{0}
+}

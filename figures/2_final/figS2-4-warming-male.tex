@@ -1,0 +1,52 @@
+\documentclass[multi=tikzpicture, border=0pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (plot) at (0,0)
+    {\includegraphics{../1_base/figS2-4-warming-male.pdf}};
+  \begin{scope}[x={(plot.south east)}, y={(plot.north west)}]
+    \node[anchor=south west] at (0.00, 0.98) {\large Maximum body mass};
+    \node[anchor=south west] at (0.25, 0.98) {\large Maximum length};
+    \node[anchor=south west] at (0.50, 0.985) {\large Minimum reserve};
+    \node[anchor=south west] at (0.75, 0.98) {\large Basking time};
+    \node[anchor=south west] at (0.00, 0.65) {\large Foraging time};
+    \node[anchor=south west] at (0.25, 0.65) {\large Food intake};
+    \node[anchor=south west] at (0.50, 0.65) {\large \(T_{b,\max}\)};
+    \node[anchor=south west] at (0.75, 0.65) {\large \(T_{b,\min}\)};
+    \node[anchor=south west] at (0.00, 0.31) {\large Daily water need};
+    \node[anchor=south west] at (0.25, 0.31) {\large Lifespan};
+    \node[anchor=south west] at (0.50, 0.31) {\large Reproductive energy (J)};
+    \node[anchor=south west] at (0.75, 0.31) {\large Net reproductive rate};
+    % \(\Delta|J|\) per curve
+    \node[anchor=north] at (0.184, 0.7) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.435, 0.7) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.686, 0.7) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.94, 0.7) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.184, 0.365) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.435, 0.365) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.686, 0.365) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.94, 0.365) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.184, 0.032) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.435, 0.032) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.686, 0.032) {\footnotesize \(\Delta|J|\)};
+    \node[anchor=north] at (0.94, 0.032) {\footnotesize \(\Delta|J|\)};
+    % Ta per curve
+    \node[anchor=west] at (0.23, 0.85) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.481, 0.85) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.732, 0.85) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.986, 0.85) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.23, 0.515) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.481, 0.515) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.732, 0.515) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.986, 0.515) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.23, 0.182) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.481, 0.182) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.732, 0.182) {\footnotesize \(\overline{T}_a\)};
+    \node[anchor=west] at (0.986, 0.182) {\footnotesize \(\overline{T}_a\)};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

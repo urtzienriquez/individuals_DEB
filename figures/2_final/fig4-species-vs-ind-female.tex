@@ -1,0 +1,40 @@
+\documentclass[multi=tikzpicture, border=0pt]{standalone}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\begin{tikzpicture}
+  \node[anchor=south west, inner sep=0] (plot) at (0,0)
+    {\includegraphics{../1_base/fig4-species-vs-ind-female.pdf}};
+  \begin{scope}[x={(plot.south east)}, y={(plot.north west)}]
+    % Column group boxes (7-col layout: 6 maps + 1 legend)
+    \draw[rounded corners=3pt, thick, black] (0.000, 0.00) rectangle (0.315, 1.0);
+    \draw[rounded corners=3pt, thick, black] (0.315, 0.00) rectangle (0.625, 1.0);
+    \draw[rounded corners=3pt, thick, black] (0.625, 0.00) rectangle (0.935, 1.0);
+
+    \draw[dashed, black] (0.000, 0.666) -- (0.935, 0.666);
+    \draw[dashed, black] (0.000, 0.666) -- (0.935, 0.666);
+    \draw[dashed, black] (0.000, 0.333) -- (0.935, 0.333);
+
+    % Scenario column headers
+    \node[anchor=south] at (0.160, 1.01) {\LARGE \textbf{Current}};
+    \node[anchor=south] at (0.480, 1.01) {\LARGE \textbf{+2${}^{\circ}$C}};
+    \node[anchor=south] at (0.800, 1.01) {\LARGE \textbf{+4${}^{\circ}$C}};
+
+    % Type labels below scenario headers
+    \node[anchor=south] at (0.070, 1.005) {\large population};
+    \node[anchor=south] at (0.250, 1.005) {\large individual};
+    \node[anchor=south] at (0.3825, 1.005) {\large population};
+    \node[anchor=south] at (0.5625, 1.005) {\large individual};
+    \node[anchor=south] at (0.6925, 1.005) {\large population};
+    \node[anchor=south] at (0.8725, 1.005) {\large individual};
+
+    % Row labels (centered between each metric's two sub-rows)
+    \node[anchor=west] at (0.03, 0.800) {\Large Lifespan (yr)};
+    \node[anchor=west] at (0.03, 0.467) {\Large Max. body mass (g)};
+    \node[anchor=west] at (0.03, 0.135) {\Large Lifetime fecundity (eggs)};
+  \end{scope}
+\end{tikzpicture}
+\end{document}
