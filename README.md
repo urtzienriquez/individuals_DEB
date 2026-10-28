@@ -4,7 +4,7 @@ Data and code for:
 
 > Enriquez-Urzelai, U., Pascucci, G. & Gvoždík, L. Beyond the average phenotype: individual variation alters mechanistic forecasts of climate responses. Submitted to *Ecology Letters*.
 
-Archived version (data + code): <https://doi.org/10.5281/zenodo.XXXXXXX>
+Archived version (data + code): <https://doi.org/10.5281/zenodo.23738540>
 
 The study estimates Dynamic Energy Budget (DEB) parameters for a population-average alpine newt (*Ichthyosaura alpestris*) and for 37 individually monitored newts, couples each parameterisation with NicheMapR biophysical simulations across Europe (current climate, +2 °C and +4 °C), and quantifies Jensen bias, i.e. the difference between the prediction of the average phenotype and the mean of the individual predictions.
 
