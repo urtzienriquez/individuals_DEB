@@ -7,6 +7,10 @@
 \par
 }
 
+\section{Study species}\label{sm:species}
+
+Juvenile alpine newts (\emph{Ichthyosaura alpestris}) usually leave their aquatic larval habitat and disperse on land until sexual maturity \parencite{denoel2004}. Adults spend most of the year on land except during the breeding season (April--June). Terrestrial individuals are predominantly nocturnal or crepuscular and use a variety of daytime retreats, including leaf litter, stones, dead tree trunks and burrows of other animals \parencite{rocek2003}. Juveniles, as other predominantly nocturnal amphibians \parencite{enriquez-urzelai2020}, can show diurnal activity (especially after metamorphosis) to acquire energy reserves before their first winter. The preferred body temperature of the species is \qty{17.3}{\celsius}, with a lower bound of thermal preference of \qty{13.8}{\celsius} and an upper bound of \qty{20.0}{\celsius} \parencite{gvozdik2017}, although individuals remain capable of locomotion at temperatures approaching \qty{1}{\celsius} (S. Baškiera \& L. Gvoždík, unpublished data).
+
 \section{The standard DEB model}\label{sm:deb}
 
 Dynamic Energy Budget (DEB) theory \parencite{sousa2008,kooijman2010} describes the acquisition, storage, and allocation of energy and mass throughout the life cycle. The standard DEB model \parencite{marques2018} represents an organism by three state variables: structural volume $V$, reserve energy $E$, and cumulative energy invested in maturation $E_H$ (plus a reproduction buffer $E_R$ in adults). Energy enters the organism as food, is assimilated into reserve at a rate proportional to surface area, and is subsequently mobilised (catabolised) from the reserve to fuel five downstream processes: somatic maintenance, growth in structure, maturity maintenance, maturation (in juveniles), and reproduction (in adults). Reproduction energy accumulates in a buffer and is periodically converted into eggs. Life-history transitions occur at species-specific maturity thresholds: e.g., birth at $E_H^b$ and sexual maturity at $E_H^p$ \parencite{kooijman2010,marques2018,oliveira2026}.

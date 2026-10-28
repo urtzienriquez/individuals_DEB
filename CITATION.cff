@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use these data or code, please cite them as below."
+title: "Data from: Beyond the average phenotype: individual variation alters mechanistic forecasts of climate responses"
+authors:
+  - family-names: Enriquez-Urzelai
+    given-names: Urtzi
+    affiliation: "Institute of Vertebrate Biology, Czech Academy of Sciences"
+  - family-names: Pascucci
+    given-names: Gioele
+    affiliation: "Institute of Vertebrate Biology, Czech Academy of Sciences; Masaryk University"
+  - family-names: Gvoždík
+    given-names: Lumír
+    affiliation: "Institute of Vertebrate Biology, Czech Academy of Sciences"
+version: "ecolets-v1"
+date-released: 2026-10-28
+doi: 10.5281/zenodo.XXXXXXX
+license: MIT
+repository-code: "https://github.com/urtzienriquez/individuals_DEB"

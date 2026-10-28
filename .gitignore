@@ -25,3 +25,5 @@ toword/
 *_processed.tex
 *cover_letter.*
 GCB_main.zip
+raw_data/alpestris_shapefile/
+zenodo_upload/
