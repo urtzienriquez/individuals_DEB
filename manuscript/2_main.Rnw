@@ -15,7 +15,7 @@
 
 \noindent\textbf{Number of figures, tables and text boxes:} 4 figures; no tables; no text boxes
 
-\noindent\textbf{Correspondence:} Urtzi Enriquez-Urzelai, Institute of Vertebrate Biology, Czech Academy of Sciences, \textbf{[STREET ADDRESS, POSTCODE]} Brno, Czech Republic. Tel.: \textbf{[PHONE]}. E-mail: uenriquez@proton.me
+\noindent\textbf{Correspondence:} Urtzi Enriquez-Urzelai, Institute of Vertebrate Biology, Czech Academy of Sciences, Brno, Czech Republic. E-mail: uenriquez@proton.me
 
 \noindent\textbf{Statement of authorship:} UEU and LG designed the study. LG provided the individual growth and metabolic data. UEU estimated the DEB parameters, performed the simulations and analyses, and produced the figures. UEU wrote the first draft of the manuscript, and all authors contributed substantially to revisions.
 

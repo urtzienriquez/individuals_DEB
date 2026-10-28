@@ -3,6 +3,7 @@
 % page layout
 \usepackage[a4paper, margin=1in]{geometry}
 \usepackage{lineno}
+\usepackage{setspace}
 
 % misc
 \usepackage{multirow}
@@ -28,9 +29,55 @@
 \DeclareSIUnit{\year}{year}
 \DeclareSIUnit{\Otwo}{O\textsubscript{2}}
 
-% bibliography
-\usepackage[style=apa, backend=biber, uniquename=false, giveninits=false]{biblatex}
-% \usepackage[style=nature, backend=biber, uniquename=false, giveninits=false]{biblatex}
+% bibliography (Ecology Letters style)
+\usepackage[
+  style=authoryear,
+  backend=biber,
+  sorting=nyt,
+  sortcites=true,
+  maxcitenames=2,
+  mincitenames=1,
+  maxbibnames=6,
+  minbibnames=6,
+  uniquename=false,
+  uniquelist=false,
+  giveninits=true,
+  dashed=false,
+  date=year,
+  labeldate=year,
+  doi=false,
+  url=false,
+  isbn=false,
+  eprint=false
+]{biblatex}
+% citations: "Author Year", "&" between two authors
+\DeclareDelimFormat{nameyeardelim}{\addspace}
+\DeclareDelimFormat{finalnamedelim}{\addspace\&\space}
+\DeclareDelimFormat[bib]{finalnamedelim}{\addspace\&\space}
+\DeclareNameAlias{sortname}{family-given}
+% reference list: "Title. Abbrev. J., Volume, pages."
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldsource=shortjournal]
+      \step[fieldset=journaltitle, origfieldval]
+    }
+    \map{
+      \pertype{article}
+      \step[fieldset=editor, null]
+    }
+  }
+}
+\DeclareFieldFormat[article]{title}{#1}
+\DeclareFieldFormat{journaltitle}{#1\isdot}
+\DeclareFieldFormat{pages}{#1}
+\renewbibmacro{in:}{\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
+\renewbibmacro*{journal+issuetitle}{%
+  \usebibmacro{journal}%
+  \setunit{\addcomma\space}%
+  \printfield{volume}%
+  \setunit*{\addcomma\space}%
+  \printfield{eid}}
 
 % authors and affiliations
 \usepackage{authblk}
@@ -58,7 +105,8 @@
 
 \affil[1]{Czech Academy of Sciences, Institute of Vertebrate Biology, Brno, Czech Republic}
 \affil[2]{Department of Botany and Zoology, Faculty of Science, Masaryk University, Brno, Czech Republic}
-\affil[*]{Corresponding author: uenriquez@proton.me}
+\affil[ ]{E-mails: UEU, uenriquez@proton.me; GP, gioelepascucci@mail.muni.cz; LG, gvozdik@ivb.cz}
+\affil[*]{Corresponding author}
 \date{\vspace{-5ex}}
 
 \makeatletter
@@ -97,6 +145,7 @@
   \setcounter{appnum}{\numexpr#1-1\relax}%
   \refstepcounter{appnum}
   \newpage
+  \singlespacing
   \ifdefined\nolinenumbers\nolinenumbers\fi
   \setcounter{page}{1}
   \newrefsection
@@ -142,7 +191,7 @@
 
 \section{Jensen bias for males}
 
-\textbf{Figure~\ref{fig:map-jensen-M}} shows the spatial distribution of Jensen bias ($J$) between population-average and individual-level prediction surfaces for males under current European climate. While the population-average DEB parameterisation underestimated most performance metrics for females (\textbf{Fig.~2}), the pattern for males was largely opposite: overestimation dominated for body size, reserve, food, reproductive energy and basking metrics, whereas maximum and minimum body temperature showed the reverse pattern. Foraging time was more balanced, with similar proportions of positive and negative bias across the range. The magnitude and direction of Jensen bias therefore depended strongly on both sex and ecological performance metric.
+\textbf{Figure~\ref{fig:map-jensen-M}} shows the spatial distribution of Jensen bias ($J$) between population-average and individual-level prediction surfaces for males under current European climate. While the population-average DEB parameterisation underestimated most performance metrics for females (\textbf{Fig.~2}), the pattern for males was largely opposite: the population-average parameterisation overestimated most metrics, including reproductive energy ($|J| = 2315$\,J), basking time ($|J| = 286$\,h) and foraging time ($|J| = 398$\,h). In relative terms, male bias was largest for reproductive energy (normalised $|J| = 9.1$\%), $R_0$ (7.4\%) and food intake (6.9\%). Overestimation dominated for body size, reserve, food, reproductive energy and basking metrics ($J>0$ in 57--96\% of cells), whereas maximum and minimum body temperature showed predominantly negative bias ($J<0$ in 84--93\% of cells). The magnitude and direction of Jensen bias therefore depended strongly on both sex and ecological performance metric.
 
 \begin{figure}[H]
   \centering
@@ -183,7 +232,7 @@ A similar spatial pattern was observed for males (\textbf{Fig.~\ref{fig:map-cv-m
 
 \section{Climate warming reshapes Jensen bias (males)}
 
-Climate warming altered the magnitude of Jensen bias for all twelve male performance metrics (\textbf{Fig.~\ref{fig:map-jensen-warming-M}}), mirroring the pattern observed for females (\textbf{Fig.~3}). However, as for females, warming did not produce a uniform response: the strongest relative amplification occurred for minimum body temperature and maximum body temperature, whereas lifespan ($-1\%$) was attenuated. The sign of $J$ changed in a substantial proportion of cells under \qty{+4}{\celsius} warming, with highest rates for basking time, foraging time and minimum reserve. Even under \qty{+2}{\celsius} warming, the direction of change was already discernible for most metrics, with 11 of the 12 metrics showing increased $|J|$ and 1 metric (lifespan) switching from amplification at \qty{+2}{\celsius} to attenuation at \qty{+4}{\celsius}, suggesting a nonlinear threshold in the averaging bias.
+Climate warming altered the magnitude of Jensen bias for all twelve male performance metrics (\textbf{Fig.~\ref{fig:map-jensen-warming-M}}), mirroring the pattern observed for females (\textbf{Fig.~3}). However, as for females, warming did not produce a uniform response: the strongest relative amplification occurred for minimum body temperature (rel.\ $\Delta|J| = +$510\%; 60\% of cells) and maximum body temperature (rel.\ $\Delta|J| = +$215\%; 62\% of cells), whereas lifespan ($-1\%$) was attenuated. The sign of $J$ changed in 5--46\% of cells under \qty{+4}{\celsius} warming, with highest rates for basking time (46\%), foraging time (43\%) and minimum reserve (31\%). Even under \qty{+2}{\celsius} warming, the direction of change was already discernible for most metrics: 11 metrics showed increased $|J|$, with relative changes ranging from $+$10\% (maximum body length) to $+$126\% (minimum body temperature), while 1 metric was attenuated (minimum reserve ($-1\%$)), and 1 metric (lifespan) switched from amplification at \qty{+2}{\celsius} to attenuation at \qty{+4}{\celsius}, suggesting a nonlinear threshold in the averaging bias. For comparison, in females 1 metric was attenuated under \qty{+2}{\celsius} (minimum reserve ($-5\%$)).
 
 \begin{figure}[H]
   \centering
@@ -196,7 +245,7 @@ Climate warming altered the magnitude of Jensen bias for all twelve male perform
 
 \section{Consequences for ecological forecasts (males)}
 
-Jensen bias produced trait-specific differences between population-average and individual-level forecasts for males under both current and future climates (\textbf{Fig.~\ref{fig:map-suitability-M}}), mirroring the female pattern (\textbf{Fig.~4}). Reproductive energy exhibited the largest discrepancies, with the population-average model generally overpredicting relative to the individual-level mean under the current climate. Lifespan showed a consistent tendency for the population-average model to predict higher values than the individual-level mean across climate scenarios, whereas maximum body mass showed comparatively close agreement, indicating relatively weak consequences of physiological averaging for this trait. The relative bias maps (\textbf{Figs.~\ref{fig:pct-diff-F}, \ref{fig:pct-diff-M}}) express the same comparison as a percentage of the individual-level mean, making the spatial structure of the disagreement visible.
+Jensen bias produced trait-specific differences between population-average and individual-level forecasts for males under both current and future climates (\textbf{Fig.~\ref{fig:map-suitability-M}}), mirroring the female pattern (\textbf{Fig.~4}). Reproductive energy exhibited the largest discrepancies, with the population-average model generally overpredicting relative to the individual-level mean under the current climate. The population-average model also overpredicted lifespan (84\% of cells; median relative bias $+2.1$\%) and maximum body mass (95\% of cells; median $+5.5$\%), and the median relative bias in reproductive energy under \qty{+4}{\celsius} was $+10.9$\%. Lifespan showed a consistent tendency for the population-average model to predict higher values than the individual-level mean across climate scenarios, whereas maximum body mass showed comparatively close agreement, indicating relatively weak consequences of physiological averaging for this trait. The relative bias maps (\textbf{Figs.~\ref{fig:pct-diff-F}, \ref{fig:pct-diff-M}}) express the same comparison as a percentage of the individual-level mean, making the spatial structure of the disagreement visible.
 
 \begin{figure}[H]
   \centering

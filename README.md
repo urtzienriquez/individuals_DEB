@@ -23,7 +23,7 @@ The study estimates Dynamic Energy Budget (DEB) parameters for a population-aver
 ## Software
 
 - R 4.5.0
-- NicheMapR **3.3.3** (the exact version matters for reproducing the simulations; install with `remotes::install_github("mrke/NicheMapR@<tag or commit>")`) <!-- CONFIRM version/commit -->
+- NicheMapR **3.3.3** (https://github.com/mrke/NicheMapR; the exact version matters for reproducing the simulations)
 - R packages: terra 1.9.11, sf 1.1.1, mgcv 1.9.4, dplyr 1.2.1, tidyr, purrr, ggplot2 4.0.3, maps, mapdata, tikzDevice, R.matlab, xml2, future, future.apply
 - MATLAB with DEBtool_M and AmPtool (https://github.com/add-my-pet) for the DEB parameter estimation
 - LaTeX (pdflatex, biber) and the `knitrmini` R package to build the manuscript and figure labels

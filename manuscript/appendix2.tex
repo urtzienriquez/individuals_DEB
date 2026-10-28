@@ -3,6 +3,7 @@
 % page layout
 \usepackage[a4paper, margin=1in]{geometry}
 \usepackage{lineno}
+\usepackage{setspace}
 
 % misc
 \usepackage{multirow}
@@ -28,9 +29,55 @@
 \DeclareSIUnit{\year}{year}
 \DeclareSIUnit{\Otwo}{O\textsubscript{2}}
 
-% bibliography
-\usepackage[style=apa, backend=biber, uniquename=false, giveninits=false]{biblatex}
-% \usepackage[style=nature, backend=biber, uniquename=false, giveninits=false]{biblatex}
+% bibliography (Ecology Letters style)
+\usepackage[
+  style=authoryear,
+  backend=biber,
+  sorting=nyt,
+  sortcites=true,
+  maxcitenames=2,
+  mincitenames=1,
+  maxbibnames=6,
+  minbibnames=6,
+  uniquename=false,
+  uniquelist=false,
+  giveninits=true,
+  dashed=false,
+  date=year,
+  labeldate=year,
+  doi=false,
+  url=false,
+  isbn=false,
+  eprint=false
+]{biblatex}
+% citations: "Author Year", "&" between two authors
+\DeclareDelimFormat{nameyeardelim}{\addspace}
+\DeclareDelimFormat{finalnamedelim}{\addspace\&\space}
+\DeclareDelimFormat[bib]{finalnamedelim}{\addspace\&\space}
+\DeclareNameAlias{sortname}{family-given}
+% reference list: "Title. Abbrev. J., Volume, pages."
+\DeclareSourcemap{
+  \maps[datatype=bibtex]{
+    \map[overwrite]{
+      \step[fieldsource=shortjournal]
+      \step[fieldset=journaltitle, origfieldval]
+    }
+    \map{
+      \pertype{article}
+      \step[fieldset=editor, null]
+    }
+  }
+}
+\DeclareFieldFormat[article]{title}{#1}
+\DeclareFieldFormat{journaltitle}{#1\isdot}
+\DeclareFieldFormat{pages}{#1}
+\renewbibmacro{in:}{\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
+\renewbibmacro*{journal+issuetitle}{%
+  \usebibmacro{journal}%
+  \setunit{\addcomma\space}%
+  \printfield{volume}%
+  \setunit*{\addcomma\space}%
+  \printfield{eid}}
 
 % authors and affiliations
 \usepackage{authblk}
@@ -58,7 +105,8 @@
 
 \affil[1]{Czech Academy of Sciences, Institute of Vertebrate Biology, Brno, Czech Republic}
 \affil[2]{Department of Botany and Zoology, Faculty of Science, Masaryk University, Brno, Czech Republic}
-\affil[*]{Corresponding author: uenriquez@proton.me}
+\affil[ ]{E-mails: UEU, uenriquez@proton.me; GP, gioelepascucci@mail.muni.cz; LG, gvozdik@ivb.cz}
+\affil[*]{Corresponding author}
 \date{\vspace{-5ex}}
 
 \makeatletter
@@ -97,6 +145,7 @@
   \setcounter{appnum}{\numexpr#1-1\relax}%
   \refstepcounter{appnum}
   \newpage
+  \singlespacing
   \ifdefined\nolinenumbers\nolinenumbers\fi
   \setcounter{page}{1}
   \newrefsection

@@ -1,6 +1,7 @@
 \input{00_preamble}
 \addbibresource{references.bib}
 \addbibresource{packages.bib}
+\addbibresource{data.bib}
 
 \newif\iftexlab
 \iftexlab

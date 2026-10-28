@@ -14,7 +14,7 @@ Tab-delimited. Annual measurements of 37 alpine newts (*Ichthyosaura alpestris*;
 | `Sex` | Sex: `F` female, `M` male | — |
 | `BM` | Body mass | g |
 | `VO2` | Standard (resting) metabolic rate, as oxygen consumption | mL O2 h⁻¹ |
-| `resVO2` | Residual of VO2 after accounting for body mass, as in the original study (not used in the analyses) <!-- CONFIRM --> | mL O2 h⁻¹ |
+| `resVO2` | Residual of VO2 after accounting for body mass, as in the original study (not used in the analyses) | mL O2 h⁻¹ |
 
 ### `Females2014_clutchsize_v2.csv`
 
